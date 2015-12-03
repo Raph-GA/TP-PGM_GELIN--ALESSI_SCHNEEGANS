@@ -25,6 +25,18 @@ public class Images {
         this.image = i;
     }
 
+    /*
+    Permet de modifier une valeur du tableau formant l'image
+    */
+    public void setValeur(int v,int i, int j) {
+        if (i <= this.hauteur && j <= this.largeur) {
+            this.image[i][j]=v;
+        }
+        else{
+            System.out.println("hors champ");
+        }
+    }
+
     public void affiche() {
         int i;
         int j;
@@ -66,18 +78,22 @@ public class Images {
 
             int l = 0;
             while (ligne != null) {
-                chaine = tok.nextToken();
+                try {
+                    chaine = tok.nextToken();
+                } catch (Exception NoSuchElementException) {
+                    chaine = null;
+                }
                 int k = 0;
                 // on va obtenir le tableau correspondant à l'image
                 while (chaine != null) {
                     tab.image[l][k] = Integer.parseInt(chaine);
                     k++;
-                    try{
+                    try {
                         chaine = tok.nextToken();
-                    }catch(Exception NoSuchElementException){
+                    } catch (Exception NoSuchElementException) {
                         chaine = null;
                     }
-                    
+
                 }
                 ligne = br.readLine();
                 l++;
@@ -86,12 +102,68 @@ public class Images {
             this.hauteur = tab.hauteur;
             this.largeur = tab.largeur;
             this.image = tab.image;
-            
+
             br.close();//on ferme le fichier
-            
+
         } catch (Exception e) {
             System.out.println(e.toString());
         }
+    }
 
+    /*fonction permettant d'agrandir une image, l'image obtenue est 4 fois
+     plus grande. (hauteur *2 et largeur * 2)
+     */
+    public void agrandir() {
+        int h = this.hauteur;
+        int l = this.largeur;
+
+        Images oupoup = new Images(2 * h, 2 * l);
+
+        for (int i = 0; i < this.hauteur; i++) {
+            for (int j = 0; j < this.largeur; j++) {
+                oupoup.image[2 * i + 1][2 * j] = this.image[i][j];
+                oupoup.image[2 * i][2 * j + 1] = this.image[i][j];
+                oupoup.image[2 * i][2 * j] = this.image[i][j];
+                oupoup.image[2 * i + 1][2 * j + 1] = this.image[i][j];
+            }
+        }
+        this.hauteur = 2 * h;
+        this.largeur = 2 * l;
+        this.image = oupoup.image;
+    }
+
+    /*fonction permettant de réduire une image, l'image obtenue est 4 fois
+     plus petite. (hauteur/2 et largeur/2)
+     */
+    public void Réduire() {
+        int h = this.hauteur / 2;
+        int l = this.largeur / 2;
+
+        Images oupoup = new Images(h, l);
+
+        for (int i = 0; i < h / 2; i++) {
+            for (int j = 0; j < l / 2; j++) {
+                oupoup.image[i][j] = this.image[2 * i][2 * j];
+
+            }
+        }
+        this.hauteur = oupoup.hauteur;
+        this.largeur = oupoup.largeur;
+        this.image = oupoup.image;
+    }
+
+    /*transforme une image en nuance de gris en une image de 2 couleurs noir et blanc
+     *
+     */
+    public void seuillage() {
+        for (int i = 0; i < this.hauteur; i++) {
+            for (int j = 0; j < this.largeur; j++) {
+                if (this.image[i][j] < 123) {
+                    this.image[i][j] = 0;
+                } else {
+                    this.image[i][j] = 255;
+                }
+            }
+        }
     }
 }
